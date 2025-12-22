@@ -49,7 +49,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      uploadForm.addEventListener("submit", handleUpload);
+      document.addEventListener("submit", (event) => {
+        if (event.target && event.target.id === "uploadForm") {
+            handleUpload(event);
+        }
+      });
       console.log("Listener attached!");
 
       watchGallery();
