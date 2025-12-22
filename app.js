@@ -2,21 +2,20 @@
 //  Firebase initialization
 // ===============================
 
-// Replace these values with your Firebase project's config
-// (from Firebase console -> Project settings -> General -> Your apps)
+// Initialize Firebase using CDN-compatible syntax
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyB1bG1-emGOCRiTSHB0_WrFaGqLWVBSPl4",
+  authDomain: "petparade-9b62f.firebaseapp.com",
+  projectId: "petparade-9b62f",
+  storageBucket: "petparade-9b62f.appspot.com", // FIXED: use .appspot.com not .firebasestorage.app
+  messagingSenderId: "930397469356",
+  appId: "1:930397469356:web:ffc46ae3cea0468a833d09"
 };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// References to Firestore and Storage
+// Set up Firestore and Storage
 const db = firebase.firestore();
 const storage = firebase.storage();
 

@@ -1,0 +1,8 @@
+# Firebase local cache
+.firebase/
+
+# Firebase CLI config files (optional to ignore)
+.firebaserc
+firebase.json
+firestore.rules
+storage.rules
