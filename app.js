@@ -39,15 +39,22 @@ function $(id) {
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     const uploadForm = document.getElementById("uploadForm");
+    const nameInput = document.getElementById("petName");
 
-    if (uploadForm) {
-      uploadForm.addEventListener("submit", handleUpload);
+    if (!uploadForm) {
+      console.error("uploadForm not found");
+      return;
     }
 
-    watchGallery();
-  }, 50);
-});
+    if (!nameInput) {
+      console.error("petName input not found");
+      return;
+    }
 
+    uploadForm.addEventListener("submit", handleUpload);
+    watchGallery();
+  }, 100);
+});
 
 async function handleUpload(event) {
   event.preventDefault();
