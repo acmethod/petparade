@@ -38,21 +38,22 @@ function $(id) {
 
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
-    const uploadForm = document.getElementById("uploadForm");
-    const nameInput = document.getElementById("petName");
+    setTimeout(() => {
+      const uploadForm = document.getElementById("uploadForm");
+      const nameInput = document.getElementById("petName");
 
-    if (!uploadForm) {
-      console.error("uploadForm not found");
-      return;
-    }
+      console.log("Trying to attach listener…", uploadForm, nameInput);
 
-    if (!nameInput) {
-      console.error("petName input not found");
-      return;
-    }
+      if (!uploadForm || !nameInput) {
+        console.error("Form elements not ready yet");
+        return;
+      }
 
-    uploadForm.addEventListener("submit", handleUpload);
-    watchGallery();
+      uploadForm.addEventListener("submit", handleUpload);
+      console.log("Listener attached!");
+
+      watchGallery();
+    }, 200);
   }, 100);
 });
 
