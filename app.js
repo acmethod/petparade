@@ -57,6 +57,14 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function handleUpload(event) {
+
+    console.log({
+    nameInput: $("petName"),
+    categoryInput: $("petCategory"),
+    emailInput: $("ownerEmail"),
+    fileInput: $("petImage")
+    });
+
   event.preventDefault();
 
   const nameInput = $("petName");
