@@ -2,80 +2,47 @@
 //  Firebase initialization
 // ===============================
 
-// Initialize Firebase using CDN-compatible syntax
 const firebaseConfig = {
   apiKey: "AIzaSyB1bG1-emGOCRiTSHB0_WrFaGqLWVBSPl4",
   authDomain: "petparade-9b62f.firebaseapp.com",
   projectId: "petparade-9b62f",
-  storageBucket: "petparade-9b62f.appspot.com", // FIXED: use .appspot.com not .firebasestorage.app
+  storageBucket: "petparade-9b62f.appspot.com",
   messagingSenderId: "930397469356",
   appId: "1:930397469356:web:ffc46ae3cea0468a833d09"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// Set up Firestore and Storage
 const db = firebase.firestore();
 const storage = firebase.storage();
-
-
-// ===============================
-//  Helpers
-// ===============================
-
-/**
- * Safely get an element by ID.
- */
-function $(id) {
-  return document.getElementById(id);
-}
 
 
 // ===============================
 //  Upload form handling
 // ===============================
 
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    setTimeout(() => {
-      const uploadForm = document.getElementById("uploadForm");
-      const nameInput = document.getElementById("petName");
-
-      console.log("Trying to attach listener…", uploadForm, nameInput);
-
-      if (!uploadForm || !nameInput) {
-        console.error("Form elements not ready yet");
-        return;
-      }
-
-      document.addEventListener("submit", (event) => {
-        if (event.target && event.target.id === "uploadForm") {
-            handleUpload(event);
-        }
-      });
-      console.log("Listener attached!");
-
-      watchGallery();
-    }, 200);
-  }, 100);
+// Use delegated event listener so it works even if Multiverse replaces the form
+document.addEventListener("submit", (event) => {
+  if (event.target && event.target.id === "uploadForm") {
+    handleUpload(event);
+  }
 });
 
 async function handleUpload(event) {
-
-    console.log({
-    nameInput: $("petName"),
-    categoryInput: $("petCategory"),
-    emailInput: $("ownerEmail"),
-    fileInput: $("petImage")
-    });
-
   event.preventDefault();
 
-  const nameInput = $("petName");
-  const categoryInput = $("petCategory");
-  const emailInput = $("ownerEmail");
-  const fileInput = $("petImage");
+  // Query inputs directly from the DOM (NOT from the form)
+  const nameInput = document.getElementById("petName");
+  const categoryInput = document.getElementById("petCategory");
+  const emailInput = document.getElementById("ownerEmail");
+  const fileInput = document.getElementById("petImage");
+
+  console.log({ nameInput, categoryInput, emailInput, fileInput });
+
+  if (!nameInput || !categoryInput || !emailInput || !fileInput) {
+    console.error("One or more inputs not found in the live DOM");
+    return;
+  }
 
   const name = nameInput.value.trim();
   const category = categoryInput.value.trim();
@@ -88,27 +55,22 @@ async function handleUpload(event) {
   }
 
   try {
-    // Create a unique file path in Firebase Storage
     const filePath = `pets/${Date.now()}_${file.name}`;
     const storageRef = storage.ref().child(filePath);
 
-    // Upload file
     const snapshot = await storageRef.put(file);
     const imageUrl = await snapshot.ref.getDownloadURL();
 
-    // Save document in Firestore
     await db.collection("pets").add({
-      name: name,
-      category: category,
-      email: email,
-      imageUrl: imageUrl,
+      name,
+      category,
+      email,
+      imageUrl,
       likes: 0,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
-    // Reset form
     event.target.reset();
-
     alert("Pet uploaded successfully!");
 
   } catch (error) {
@@ -122,17 +84,13 @@ async function handleUpload(event) {
 //  Gallery rendering (live updates)
 // ===============================
 
-/**
- * Listen for live changes in the "pets" collection and render them.
- */
 function watchGallery() {
-  const galleryEl = $("gallery");
+  const galleryEl = document.getElementById("gallery");
   if (!galleryEl) return;
 
   db.collection("pets")
     .orderBy("createdAt", "desc")
     .onSnapshot((snapshot) => {
-      // Clear current gallery
       galleryEl.innerHTML = "";
 
       snapshot.forEach((doc) => {
@@ -144,7 +102,6 @@ function watchGallery() {
         const category = pet.category || "";
         const imageUrl = pet.imageUrl || "";
 
-        // Create article.thumb structure to match Multiverse
         const article = document.createElement("article");
         article.className = "thumb";
 
@@ -165,18 +122,14 @@ function watchGallery() {
         galleryEl.appendChild(article);
       });
 
-      // Attach like button handlers after rendering
       attachLikeHandlers();
     });
 }
 
-/**
- * Attach click listeners to all like buttons.
- */
 function attachLikeHandlers() {
   const buttons = document.querySelectorAll(".like-button");
   buttons.forEach((btn) => {
-    btn.removeEventListener("click", likeButtonHandler); // avoid duplicate handlers
+    btn.removeEventListener("click", likeButtonHandler);
     btn.addEventListener("click", likeButtonHandler);
   });
 }
@@ -188,12 +141,10 @@ async function likeButtonHandler(event) {
   try {
     const ref = db.collection("pets").doc(id);
 
-    // Increment likes atomically in Firestore
     await ref.update({
       likes: firebase.firestore.FieldValue.increment(1)
     });
 
-    // Optimistically update UI
     const likesSpan = document.getElementById(`likes-${id}`);
     if (likesSpan) {
       const current = parseInt(likesSpan.textContent || "0", 10);
@@ -208,7 +159,7 @@ async function likeButtonHandler(event) {
 
 
 // ===============================
-//  Simple HTML escaping
+//  HTML escaping
 // ===============================
 
 function escapeHtml(str) {
@@ -219,3 +170,7 @@ function escapeHtml(str) {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
 }
+
+
+// Start gallery listener immediately
+watchGallery();
