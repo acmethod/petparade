@@ -37,14 +37,15 @@ function $(id) {
 // ===============================
 
 document.addEventListener("DOMContentLoaded", () => {
-  const uploadForm = $("uploadForm");
+  setTimeout(() => {
+    const uploadForm = document.getElementById("uploadForm");
 
-  if (uploadForm) {
-    uploadForm.addEventListener("submit", handleUpload);
-  }
+    if (uploadForm) {
+      uploadForm.addEventListener("submit", handleUpload);
+    }
 
-  // Load existing pets on page load
-  watchGallery();
+    watchGallery();
+  }, 50);
 });
 
 
