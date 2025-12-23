@@ -96,7 +96,7 @@ function watchGallery() {
       const section = document.createElement("section");
       section.className = "thumbnails";
 
-      snapshot.forEach((doc) => {
+    snapshot.forEach((doc) => {
         const pet = doc.data();
         const id = doc.id;
 
@@ -105,7 +105,6 @@ function watchGallery() {
         const imageUrl = pet.imageUrl || "";
         const likes = typeof pet.likes === "number" ? pet.likes : 0;
 
-        // Multiverse tile wrapper
         const wrapper = document.createElement("div");
 
         const link = document.createElement("a");
@@ -118,10 +117,36 @@ function watchGallery() {
         img.src = imageUrl;
         img.alt = name;
 
+        // Top-left category tag
+        const tag = document.createElement("span");
+        tag.className = "category-tag";
+        tag.textContent = category;
+
+        // Lower-left label
+        const label = document.createElement("h3");
+        label.textContent = name;
+
+        // Lower-right like button
+        const likeBtn = document.createElement("button");
+        likeBtn.className = "like-tile-btn";
+        likeBtn.textContent = `❤️ ${likes}`;
+        likeBtn.setAttribute("data-id", id);
+
+        likeBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            likeBtn.classList.add("pulse");
+            setTimeout(() => likeBtn.classList.remove("pulse"), 300);
+            likeButtonHandler(e);
+        });
+
         link.appendChild(img);
+        link.appendChild(tag);
+        link.appendChild(label);
+        link.appendChild(likeBtn);
         wrapper.appendChild(link);
         section.appendChild(wrapper);
-      });
+    });
 
       mainEl.appendChild(section);
 
