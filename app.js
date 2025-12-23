@@ -93,7 +93,6 @@ function watchGallery() {
     .onSnapshot((snapshot) => {
       mainEl.innerHTML = "";
 
-      // Create the Multiverse wrapper
       const section = document.createElement("section");
       section.className = "thumbnails";
 
@@ -106,26 +105,26 @@ function watchGallery() {
         const imageUrl = pet.imageUrl || "";
         const likes = typeof pet.likes === "number" ? pet.likes : 0;
 
-        // Multiverse tile (NO DIV WRAPPER)
+        // Multiverse tile wrapper
+        const wrapper = document.createElement("div");
+
         const link = document.createElement("a");
         link.href = imageUrl;
         link.className = "thumbnail";
         link.setAttribute("data-position", "center center");
-
-        // Lightbox caption
-        link.title = `${escapeHtml(name)} — ${escapeHtml(category)} — ❤️ ${likes} likes`;
+        link.title = `${name} — ${category} — ❤️ ${likes} likes`;
 
         const img = document.createElement("img");
         img.src = imageUrl;
-        img.alt = escapeHtml(name);
+        img.alt = name;
 
         link.appendChild(img);
-        section.appendChild(link);
+        wrapper.appendChild(link);
+        section.appendChild(wrapper);
       });
 
       mainEl.appendChild(section);
 
-      // Reinitialize Multiverse lightbox/grid
       $('#main').poptrox({
         usePopupCaption: true,
         usePopupNav: true,
