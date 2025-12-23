@@ -2039,7 +2039,6 @@ input, select, textarea {
 		}
 
 /* Thumbnails */
-
 .thumbnails {
     overflow: hidden;
 }
@@ -2047,7 +2046,7 @@ input, select, textarea {
 .thumbnails > div {
     float: left;
     width: 25%;
-    padding: 1em;
+    padding: 0.5em; /* MATCHES MULTIVERSE */
 }
 
 @media screen and (max-width: 1280px) {
@@ -2072,27 +2071,24 @@ input, select, textarea {
     display: block;
     border-radius: 0.25em;
     overflow: hidden;
+    position: relative; /* needed for overlays */
 }
 
+/* Image fills tile naturally (Multiverse behavior) */
 .thumbnail img {
     display: block;
     width: 100%;
+    height: auto;
 }
 
-/* Ensure tile is positioned for overlays */
-.thumbnail {
-  position: relative;
-  overflow: hidden;
-}
-
-/* Gradient overlay behind text/buttons */
+/* Gradient overlay (reduced height to match Multiverse) */
 .thumbnail::after {
   content: "";
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 40%;
+  height: 25%; /* MATCHES MULTIVERSE LOOK */
   background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
   z-index: 1;
 }
@@ -2100,13 +2096,13 @@ input, select, textarea {
 /* Category tag (top-left) */
 .category-tag {
   position: absolute;
-  top: 1em;
-  left: 1em;
+  top: 0.75em;
+  left: 0.75em;
   background: rgba(0,0,0,0.6);
   color: #fff;
-  padding: 0.3em 0.6em;
-  border-radius: 0.3em;
-  font-size: 0.8em;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  font-size: 0.75em;
   z-index: 3;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -2115,8 +2111,8 @@ input, select, textarea {
 /* Lower-left label */
 .thumbnail h3 {
   position: absolute;
-  bottom: 1em;
-  left: 1em;
+  bottom: 0.75em;
+  left: 0.75em;
   margin: 0;
   color: #fff;
   font-size: 1em;
@@ -2126,14 +2122,14 @@ input, select, textarea {
 /* Lower-right like button */
 .like-tile-btn {
   position: absolute;
-  bottom: 1em;
-  right: 1em;
+  bottom: 0.75em;
+  right: 0.75em;
   background: rgba(0,0,0,0.6);
   color: #fff;
   border: 0;
-  padding: 0.4em 0.7em;
-  border-radius: 0.3em;
-  font-size: 0.9em;
+  padding: 0.35em 0.6em;
+  border-radius: 0.25em;
+  font-size: 0.85em;
   cursor: pointer;
   z-index: 3;
   transition: transform 0.2s ease, background 0.2s ease;
@@ -2148,7 +2144,6 @@ input, select, textarea {
 .like-tile-btn.pulse {
   transform: scale(1.25);
 }
-
 
 /* Footer */
 
