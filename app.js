@@ -91,7 +91,6 @@ function watchGallery() {
   db.collection("pets")
     .orderBy("createdAt", "desc")
     .onSnapshot((snapshot) => {
-      // Clear the Multiverse area
       mainEl.innerHTML = "";
 
       // Create the Multiverse wrapper
@@ -107,35 +106,23 @@ function watchGallery() {
         const imageUrl = pet.imageUrl || "";
         const likes = typeof pet.likes === "number" ? pet.likes : 0;
 
-        // Multiverse tile structure
-        const div = document.createElement("div");
-
+        // Multiverse tile (NO DIV WRAPPER)
         const link = document.createElement("a");
         link.href = imageUrl;
         link.className = "thumbnail";
         link.setAttribute("data-position", "center center");
+
+        // Lightbox caption
+        link.title = `${escapeHtml(name)} — ${escapeHtml(category)} — ❤️ ${likes} likes`;
 
         const img = document.createElement("img");
         img.src = imageUrl;
         img.alt = escapeHtml(name);
 
         link.appendChild(img);
-        div.appendChild(link);
-
-        // Optional caption + likes
-        const caption = document.createElement("div");
-        caption.innerHTML = `
-          <h3>${escapeHtml(name)}</h3>
-          <p>${escapeHtml(category)}</p>
-          <p>Likes: <span id="likes-${id}">${likes}</span></p>
-          <button class="button small like-button" data-id="${id}">❤️ Like</button>
-        `;
-
-        div.appendChild(caption);
-        section.appendChild(div);
+        section.appendChild(link);
       });
 
-      // Add the whole section directly to #main
       mainEl.appendChild(section);
 
       // Reinitialize Multiverse lightbox/grid
@@ -145,8 +132,6 @@ function watchGallery() {
         overlayColor: '#000',
         overlayOpacity: 0.75
       });
-
-      attachLikeHandlers();
     });
 }
 
