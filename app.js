@@ -93,33 +93,55 @@ function watchGallery() {
     .onSnapshot((snapshot) => {
       galleryEl.innerHTML = "";
 
+      // Create Multiverse wrapper
+      const section = document.createElement("section");
+      section.className = "thumbnails";
+
       snapshot.forEach((doc) => {
         const pet = doc.data();
         const id = doc.id;
 
-        const likes = typeof pet.likes === "number" ? pet.likes : 0;
         const name = pet.name || "Unnamed";
         const category = pet.category || "";
         const imageUrl = pet.imageUrl || "";
+        const likes = typeof pet.likes === "number" ? pet.likes : 0;
 
-        const article = document.createElement("article");
-        article.className = "thumb";
+        // Multiverse tile structure
+        const div = document.createElement("div");
 
-        article.innerHTML = `
-          <a href="${imageUrl}" class="image">
-            <img src="${imageUrl}" alt="${escapeHtml(name)}" />
-          </a>
-          <h2>${escapeHtml(name)}</h2>
+        const link = document.createElement("a");
+        link.href = imageUrl;
+        link.className = "thumbnail";
+        link.setAttribute("data-position", "center center");
+
+        const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = escapeHtml(name);
+
+        link.appendChild(img);
+        div.appendChild(link);
+
+        // Optional: add captions + likes under each tile
+        const caption = document.createElement("div");
+        caption.innerHTML = `
+          <h3>${escapeHtml(name)}</h3>
           <p>${escapeHtml(category)}</p>
-          <p class="likes">
-            Likes: <span id="likes-${id}">${likes}</span>
-          </p>
-          <button class="button small like-button" data-id="${id}">
-            ❤️ Like
-          </button>
+          <p>Likes: <span id="likes-${id}">${likes}</span></p>
+          <button class="button small like-button" data-id="${id}">❤️ Like</button>
         `;
 
-        galleryEl.appendChild(article);
+        div.appendChild(caption);
+        section.appendChild(div);
+      });
+
+      galleryEl.appendChild(section);
+
+      // Reinitialize Multiverse lightbox/grid
+      $('#main').poptrox({
+        usePopupCaption: true,
+        usePopupNav: true,
+        overlayColor: '#000',
+        overlayOpacity: 0.75
       });
 
       attachLikeHandlers();
@@ -156,6 +178,9 @@ async function likeButtonHandler(event) {
     alert("Could not like this photo. Please try again.");
   }
 }
+
+
+
 
 
 // ===============================
