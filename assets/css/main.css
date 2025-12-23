@@ -2079,6 +2079,77 @@ input, select, textarea {
     width: 100%;
 }
 
+* Ensure tile is positioned for overlays */
+.thumbnail {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient overlay behind text/buttons */
+.thumbnail::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  z-index: 1;
+}
+
+/* Category tag (top-left) */
+.category-tag {
+  position: absolute;
+  top: 1em;
+  left: 1em;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  padding: 0.3em 0.6em;
+  border-radius: 0.3em;
+  font-size: 0.8em;
+  z-index: 3;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Lower-left label */
+.thumbnail h3 {
+  position: absolute;
+  bottom: 1em;
+  left: 1em;
+  margin: 0;
+  color: #fff;
+  font-size: 1em;
+  z-index: 3;
+}
+
+/* Lower-right like button */
+.like-tile-btn {
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: 0;
+  padding: 0.4em 0.7em;
+  border-radius: 0.3em;
+  font-size: 0.9em;
+  cursor: pointer;
+  z-index: 3;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.like-tile-btn:hover {
+  background: rgba(255,255,255,0.85);
+  color: #000;
+}
+
+/* Pulse animation on like */
+.like-tile-btn.pulse {
+  transform: scale(1.25);
+}
+
+
 /* Footer */
 
 	#footer .copyright {
