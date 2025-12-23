@@ -85,15 +85,16 @@ async function handleUpload(event) {
 // ===============================
 
 function watchGallery() {
-  const galleryEl = document.getElementById("gallery");
-  if (!galleryEl) return;
+  const mainEl = document.getElementById("main");
+  if (!mainEl) return;
 
   db.collection("pets")
     .orderBy("createdAt", "desc")
     .onSnapshot((snapshot) => {
-      galleryEl.innerHTML = "";
+      // Clear the Multiverse area
+      mainEl.innerHTML = "";
 
-      // Create Multiverse wrapper
+      // Create the Multiverse wrapper
       const section = document.createElement("section");
       section.className = "thumbnails";
 
@@ -121,7 +122,7 @@ function watchGallery() {
         link.appendChild(img);
         div.appendChild(link);
 
-        // Optional: add captions + likes under each tile
+        // Optional caption + likes
         const caption = document.createElement("div");
         caption.innerHTML = `
           <h3>${escapeHtml(name)}</h3>
@@ -134,7 +135,8 @@ function watchGallery() {
         section.appendChild(div);
       });
 
-      galleryEl.appendChild(section);
+      // Add the whole section directly to #main
+      mainEl.appendChild(section);
 
       // Reinitialize Multiverse lightbox/grid
       $('#main').poptrox({
