@@ -2079,7 +2079,7 @@ input, select, textarea {
     width: 100%;
 }
 
-* Ensure tile is positioned for overlays */
+/* Ensure tile is positioned for overlays */
 .thumbnail {
   position: relative;
   overflow: hidden;

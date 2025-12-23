@@ -106,6 +106,7 @@ function watchGallery() {
         const likes = typeof pet.likes === "number" ? pet.likes : 0;
 
         const wrapper = document.createElement("div");
+        wrapper.className = "tile";
 
         const link = document.createElement("a");
         link.href = imageUrl;
