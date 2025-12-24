@@ -2159,6 +2159,7 @@ input, select, textarea {
 /* ============================
    CUSTOM PETPARADE OVERRIDES
    ============================ */
+
 /* Force thumbnails to be uniform squares */
 .thumbnail {
   aspect-ratio: 1 / 1;
@@ -2283,4 +2284,20 @@ input, select, textarea {
 
 .like-tile-btn.pulse {
     transform: scale(1.25);
+}
+
+/* Force thumbnails to be uniform squares */
+.thumbnail {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  position: relative;
+  display: block;
+}
+
+/* Make the image fill the square */
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
