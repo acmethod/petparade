@@ -2577,3 +2577,55 @@ label[for="category"] {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+/* FORM FIELD STYLING — Match Category + Upload Button */
+#uploadForm input[type="text"],
+#uploadForm input[type="email"],
+#uploadForm input[type="file"] {
+  background: #34363b;
+  border: 2px solid #36383c;
+  border-radius: 50px;
+
+  padding: 0 1.5em;
+  height: 3.2em;
+  font-size: 1em;
+  color: #fff;
+
+  width: 100%;
+  margin-bottom: 1.5rem;
+
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+#uploadForm input[type="text"]:focus,
+#uploadForm input[type="email"]:focus,
+#uploadForm input[type="file"]:focus {
+  border-color: #34a58e;
+  box-shadow: 0 0 0 2px #34a58e;
+}
+
+/* FILE INPUT — Remove default styling */
+#uploadForm input[type="file"] {
+  padding: 0.5em 1.5em;
+  height: auto;
+  border-radius: 50px;
+  background: #34363b;
+  color: #a0a0a1;
+  cursor: pointer;
+}
+
+/* Optional: Make file input text more readable */
+#uploadForm input[type="file"]::file-selector-button {
+  background: #34a58e;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 0.5em 1.5em;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+#uploadForm input[type="file"]::file-selector-button:hover {
+  background: #47c5ab;
+}
