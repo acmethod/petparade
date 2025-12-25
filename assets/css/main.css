@@ -209,3 +209,35 @@ h1, h2, h3 {
     padding: 2rem;
   }
 }
+
+
+/* ============================================================
+   FIX: Restore Multiverse-style gallery grid
+   ============================================================ */
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.gallery article {
+  width: 260px; /* fixed tile width */
+  border-radius: 12px;
+  overflow: hidden;
+  background: #1f2124;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.gallery article:hover {
+  transform: translateY(-4px);
+}
+
+.gallery article img {
+  width: 100%;
+  height: 260px; /* square tiles */
+  object-fit: cover;
+  display: block;
+}
