@@ -2400,3 +2400,73 @@ input, select, textarea {
   border-color: #34a58e;
   background: #26282c;
 }
+
+/* ============================================================
+   PETPARADE — Instagram-Style Dark Glass Lightbox
+   Safe overrides layered on top of original Multiverse CSS
+   ============================================================ */
+
+.poptrox-popup {
+  background: rgba(15, 15, 15, 0.82) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 12px;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.55);
+  overflow: hidden;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+/* Remove old gradient overlays */
+.poptrox-popup:before {
+  display: none !important;
+}
+
+/* Close button */
+.poptrox-popup .closer {
+  background-image: url("images/close.svg") !important;
+  background-size: 2rem !important;
+  opacity: 0.55 !important;
+  transition: opacity 0.2s ease;
+}
+
+.poptrox-popup .closer:hover {
+  opacity: 1 !important;
+}
+
+/* Navigation arrows */
+.poptrox-popup .nav-previous,
+.poptrox-popup .nav-next {
+  background-image: url("images/arrow.svg") !important;
+  background-size: 3rem !important;
+  opacity: 0.35 !important;
+  transition: opacity 0.2s ease;
+}
+
+.poptrox-popup .nav-previous:hover,
+.poptrox-popup .nav-next:hover {
+  opacity: 1 !important;
+}
+
+/* Caption cleanup */
+.poptrox-popup .caption {
+  background: none !important;
+  padding: 1.5rem !important;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+}
+
+.poptrox-popup .caption h2,
+.poptrox-popup .caption h3,
+.poptrox-popup .caption p {
+  color: #fff !important;
+}
+
+/* Smooth fade-in */
+.poptrox-popup.loading {
+  opacity: 0 !important;
+  transform: scale(0.97);
+}
+
+.poptrox-popup:not(.loading) {
+  opacity: 1 !important;
+  transform: scale(1);
+}
