@@ -12,22 +12,25 @@
     <!-- Upload Form (SAFE ZONE — outside Multiverse wrapper) -->
     <section id="upload" style="padding: 2rem;">
       <h2>Upload Your Pet Pic</h2>
-      <form id="uploadForm">
+     <form id="uploadForm">
         <input type="text" id="petName" placeholder="Pet Name" required>
-        <select id="petCategory" required>
+
+        <label for="category" style="display:block; margin-bottom:0.5rem; color:#fff;">Category</label>
+        <select id="category" name="category" required>
           <option value="" disabled selected>Select a Category</option>
           <option>Best Dressed</option>
-          <option>Caught in the act</option>
-          <option>Best Smile</option>
+          <option>Caught in the Act</option>
           <option>Most Photogenic</option>
           <option>Best Friends</option>
-          <option>Best Co-Worker</option>
+          <option>I want Cuddles and Treats</option>
+          <option>Best Coworker</option>
           <option>Sleeping Beauty</option>
-          <option>Cutest Baby ( Puppy, Kitten, etc... )</option>
         </select>
+
         <input type="email" id="ownerEmail" placeholder="Your Email" required>
         <input type="file" id="petImage" accept="image/*" required>
-        <button type="submit" class="button primary">Upload</button>
+
+        <button type="submit" id="uploadButton" class="button primary upload">Upload</button>
       </form>
     </section>
 
