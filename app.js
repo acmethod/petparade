@@ -33,7 +33,7 @@ async function handleUpload(event) {
 
   // Query inputs directly from the DOM (NOT from the form)
   const nameInput = document.getElementById("petName");
-  const categoryInput = document.getElementById("petCategory");
+  const categoryInput = document.getElementById("category");
   const emailInput = document.getElementById("ownerEmail");
   const fileInput = document.getElementById("petImage");
 
