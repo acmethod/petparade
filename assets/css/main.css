@@ -2470,3 +2470,19 @@ input, select, textarea {
   opacity: 1 !important;
   transform: scale(1);
 }
+
+/* Center text in category dropdown */
+select#category {
+    text-align: center;
+    text-align-last: center; /* Ensures selected option is centered */
+}
+
+/* Center text inside the upload button */
+button#uploadButton,
+input[type="submit"].upload,
+.button.upload {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
