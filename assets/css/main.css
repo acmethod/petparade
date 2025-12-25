@@ -2364,3 +2364,23 @@ input, select, textarea {
 #uploadForm button.primary:active {
   transform: translateY(0);
 }
+
+/* Wider form container */
+#upload {
+  max-width: 1200px;
+  width: 95%;
+}
+
+/* Two-column layout on larger screens */
+@media (min-width: 800px) {
+  #uploadForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem 1.5rem;
+  }
+
+  #uploadForm input[type="file"],
+  #uploadForm button.primary {
+    grid-column: span 2; /* full width */
+  }
+}
