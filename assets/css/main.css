@@ -2384,3 +2384,19 @@ input, select, textarea {
     grid-column: span 2; /* full width */
   }
 }
+
+#uploadForm select {
+  background: #1f2124;
+  border: 1px solid #3a3d41;
+  padding: 0.9rem 1rem;
+  border-radius: 0.5rem;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+#uploadForm select:focus {
+  border-color: #34a58e;
+  background: #26282c;
+}

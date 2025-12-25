@@ -14,7 +14,17 @@
       <h2>Upload Your Pet Pic</h2>
       <form id="uploadForm">
         <input type="text" id="petName" placeholder="Pet Name" required>
-        <input type="text" id="petCategory" placeholder="Category (Dog, Cat, etc.)" required>
+        <select id="petCategory" required>
+          <option value="" disabled selected>Select a Category</option>
+          <option>Best Dressed</option>
+          <option>Caught in the act</option>
+          <option>Best Smile</option>
+          <option>Most Photogenic</option>
+          <option>Best Friends</option>
+          <option>Best Co-Worker</option>
+          <option>Sleeping Beauty</option>
+          <option>Cutest Baby ( Puppy, Kitten, etc... )</option>
+        </select>
         <input type="email" id="ownerEmail" placeholder="Your Email" required>
         <input type="file" id="petImage" accept="image/*" required>
         <button type="submit" class="button primary">Upload</button>
