@@ -18,10 +18,17 @@ const storage = firebase.storage();
 
 
 // ===============================
+//  ADMIN SETTINGS
+// ===============================
+
+// Replace with your email to unlock admin controls
+const ADMIN_EMAIL = "andre@feelslikehome.ca";
+
+
+// ===============================
 //  Upload form handling
 // ===============================
 
-// Use delegated event listener so it works even if Multiverse replaces the form
 document.addEventListener("submit", (event) => {
   if (event.target && event.target.id === "uploadForm") {
     handleUpload(event);
@@ -31,18 +38,10 @@ document.addEventListener("submit", (event) => {
 async function handleUpload(event) {
   event.preventDefault();
 
-  // Query inputs directly from the DOM (NOT from the form)
   const nameInput = document.getElementById("petName");
   const categoryInput = document.getElementById("category");
   const emailInput = document.getElementById("ownerEmail");
   const fileInput = document.getElementById("petImage");
-
-  console.log({ nameInput, categoryInput, emailInput, fileInput });
-
-  if (!nameInput || !categoryInput || !emailInput || !fileInput) {
-    console.error("One or more inputs not found in the live DOM");
-    return;
-  }
 
   const name = nameInput.value.trim();
   const category = categoryInput.value.trim();
@@ -53,6 +52,9 @@ async function handleUpload(event) {
     alert("Please fill in all fields and select an image.");
     return;
   }
+
+  // Show spinner
+  showUploadSpinner(true);
 
   try {
     const filePath = `pets/${Date.now()}_${file.name}`;
@@ -77,14 +79,49 @@ async function handleUpload(event) {
     console.error("Error uploading pet:", error);
     alert("Something went wrong while uploading. Please try again.");
   }
+
+  showUploadSpinner(false);
 }
+
+
+// ===============================
+//  Upload Spinner
+// ===============================
+
+function showUploadSpinner(show) {
+  let spinner = document.getElementById("uploadSpinner");
+
+  if (!spinner) {
+    spinner = document.createElement("div");
+    spinner.id = "uploadSpinner";
+    spinner.innerHTML = `
+      <div class="spinner-overlay">
+        <div class="spinner"></div>
+      </div>
+    `;
+    document.body.appendChild(spinner);
+  }
+
+  spinner.style.display = show ? "flex" : "none";
+}
+
+
+// ===============================
+//  Category Filter
+// ===============================
+
+document.addEventListener("change", (event) => {
+  if (event.target.id === "filterCategory") {
+    watchGallery(event.target.value);
+  }
+});
 
 
 // ===============================
 //  Gallery rendering (live updates)
 // ===============================
 
-function watchGallery() {
+function watchGallery(filterCategory = "All") {
   const mainEl = document.getElementById("main");
   if (!mainEl) return;
 
@@ -96,50 +133,65 @@ function watchGallery() {
       const section = document.createElement("section");
       section.className = "thumbnails";
 
-    snapshot.forEach((doc) => {
+      snapshot.forEach((doc) => {
         const pet = doc.data();
         const id = doc.id;
 
-        const name = pet.name || "Unnamed";
-        const category = pet.category || "";
-        const imageUrl = pet.imageUrl || "";
-        const likes = typeof pet.likes === "number" ? pet.likes : 0;
+        if (filterCategory !== "All" && pet.category !== filterCategory) return;
 
         const wrapper = document.createElement("div");
         wrapper.className = "tile";
 
         const link = document.createElement("a");
-        link.href = imageUrl;
+        link.href = pet.imageUrl;
         link.className = "thumbnail";
         link.setAttribute("data-position", "center center");
-        link.title = `${name} — ${category} — ❤️ ${likes} likes`;
 
         const img = document.createElement("img");
-        img.src = imageUrl;
-        img.alt = name;
+        img.src = pet.imageUrl;
+        img.alt = pet.name;
 
-        // Top-left category tag
         const tag = document.createElement("span");
         tag.className = "category-tag";
-        tag.textContent = category;
+        tag.textContent = pet.category;
 
-        // Lower-left label
         const label = document.createElement("h3");
-        label.textContent = name;
+        label.textContent = pet.name;
 
-        // Lower-right like button
         const likeBtn = document.createElement("button");
         likeBtn.className = "like-tile-btn";
-        likeBtn.textContent = `❤️ ${likes}`;
+        likeBtn.textContent = `❤️ ${pet.likes}`;
         likeBtn.setAttribute("data-id", id);
 
         likeBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            likeBtn.classList.add("pulse");
-            setTimeout(() => likeBtn.classList.remove("pulse"), 300);
-            likeButtonHandler(e);
+          e.preventDefault();
+          e.stopPropagation();
+          likeBtn.classList.add("pulse");
+          setTimeout(() => likeBtn.classList.remove("pulse"), 300);
+          likeButtonHandler(e);
         });
+
+        // ===============================
+        //  ADMIN CONTROLS
+        // ===============================
+        if (pet.email === ADMIN_EMAIL) {
+          const adminControls = document.createElement("div");
+          adminControls.className = "admin-controls";
+
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Edit";
+          editBtn.className = "admin-edit";
+          editBtn.onclick = () => editPet(id, pet);
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Delete";
+          deleteBtn.className = "admin-delete";
+          deleteBtn.onclick = () => deletePet(id);
+
+          adminControls.appendChild(editBtn);
+          adminControls.appendChild(deleteBtn);
+          wrapper.appendChild(adminControls);
+        }
 
         link.appendChild(img);
         link.appendChild(tag);
@@ -147,7 +199,7 @@ function watchGallery() {
         link.appendChild(likeBtn);
         wrapper.appendChild(link);
         section.appendChild(wrapper);
-    });
+      });
 
       mainEl.appendChild(section);
 
@@ -160,13 +212,10 @@ function watchGallery() {
     });
 }
 
-function attachLikeHandlers() {
-  const buttons = document.querySelectorAll(".like-button");
-  buttons.forEach((btn) => {
-    btn.removeEventListener("click", likeButtonHandler);
-    btn.addEventListener("click", likeButtonHandler);
-  });
-}
+
+// ===============================
+//  Like Handler
+// ===============================
 
 async function likeButtonHandler(event) {
   const id = event.currentTarget.getAttribute("data-id");
@@ -174,40 +223,31 @@ async function likeButtonHandler(event) {
 
   try {
     const ref = db.collection("pets").doc(id);
-
     await ref.update({
       likes: firebase.firestore.FieldValue.increment(1)
     });
-
-    const likesSpan = document.getElementById(`likes-${id}`);
-    if (likesSpan) {
-      const current = parseInt(likesSpan.textContent || "0", 10);
-      likesSpan.textContent = current + 1;
-    }
-
   } catch (error) {
     console.error("Error updating likes:", error);
-    alert("Could not like this photo. Please try again.");
   }
 }
 
 
-
-
-
 // ===============================
-//  HTML escaping
+//  Admin Edit + Delete
 // ===============================
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+function editPet(id, pet) {
+  const newName = prompt("New name:", pet.name);
+  if (!newName) return;
+
+  db.collection("pets").doc(id).update({ name: newName });
+}
+
+function deletePet(id) {
+  if (!confirm("Delete this pet?")) return;
+  db.collection("pets").doc(id).delete();
 }
 
 
-// Start gallery listener immediately
+// Start gallery listener
 watchGallery();
