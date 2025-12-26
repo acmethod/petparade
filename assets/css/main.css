@@ -2653,3 +2653,17 @@ label[for="category"] {
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+body.admin-mode::before {
+  content: "ADMIN MODE";
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background: #34a58e;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  z-index: 99999;
+  opacity: 0.9;
+}

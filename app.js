@@ -22,7 +22,17 @@ const storage = firebase.storage();
 // ===============================
 
 // Replace with your email to unlock admin controls
-const ADMIN_EMAIL = "andre@feelslikehome.ca";
+const ADMIN_EMAIL = "andre@feelslikehome.com";
+
+function isAdmin() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("admin") === "1";
+}
+
+if (isAdmin()) {
+  document.body.classList.add("admin-mode");
+}
+
 
 
 // ===============================
@@ -174,7 +184,7 @@ function watchGallery(filterCategory = "All") {
         // ===============================
         //  ADMIN CONTROLS
         // ===============================
-        if (pet.email === ADMIN_EMAIL) {
+        if (isAdmin()) {
           const adminControls = document.createElement("div");
           adminControls.className = "admin-controls";
 
