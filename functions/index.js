@@ -1,32 +1,60 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+// --- Firebase Functions v2 + Admin SDK ---
+const { onObjectFinalized } = require("firebase-functions/v2/storage");
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore } = require("firebase-admin/firestore");
+const { getStorage } = require("firebase-admin/storage");
 
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+// --- Google Cloud Vision ---
+const vision = require("@google-cloud/vision");
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+// --- Initialize Firebase Admin ---
+initializeApp();
+const db = getFirestore();
+const storage = getStorage();
+const client = new vision.ImageAnnotatorClient();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+// --- NEW v2 Function Name (avoids the broken one) ---
+exports.moderateImageV2 = onObjectFinalized(
+  {
+    region: "us-central1",
+    memory: "512MiB",
+    timeoutSeconds: 60,
+  },
+  async (event) => {
+    const filePath = event.data.name;
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+    // Only moderate images in the pets/ folder
+    if (!filePath || !filePath.startsWith("pets/")) return;
+
+    const bucketName = event.data.bucket;
+    const bucket = storage.bucket(bucketName);
+
+    // Run SafeSearch
+    const [result] = await client.safeSearchDetection(
+      `gs://${bucketName}/${filePath}`
+    );
+
+    const safe = result.safeSearchAnnotation;
+
+    const isSafe =
+      safe.adult !== "LIKELY" &&
+      safe.adult !== "VERY_LIKELY" &&
+      safe.violence !== "LIKELY" &&
+      safe.violence !== "VERY_LIKELY" &&
+      safe.racy !== "LIKELY" &&
+      safe.racy !== "VERY_LIKELY";
+
+    // Extract Firestore doc ID from filename
+    const docId = filePath.split("/").pop().split(".")[0];
+
+    // Update Firestore
+    await db.collection("pets").doc(docId).update({
+      approved: isSafe,
+      flagged: !isSafe,
+      moderation: safe,
+      moderatedAt: new Date(),
+    });
+
+    console.log(`Moderation complete for ${filePath}: safe=${isSafe}`);
+  }
+);

@@ -137,6 +137,7 @@ function watchGallery(filterCategory = "All") {
   if (!mainEl) return;
 
   db.collection("pets")
+     .where("approved", "==", true)
     .orderBy("createdAt", "desc")
     .onSnapshot((snapshot) => {
       mainEl.innerHTML = "";
