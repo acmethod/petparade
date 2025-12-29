@@ -73,14 +73,15 @@ async function handleUpload(event) {
     const snapshot = await storageRef.put(file);
     const imageUrl = await snapshot.ref.getDownloadURL();
 
-    await db.collection("pets").add({
-      name,
-      category,
-      email,
-      imageUrl,
-      likes: 0,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+  await db.collection("pets").add({
+    name,
+    category,
+    email,
+    imageUrl,
+    likes: 0,
+    approved: false,   // NEW
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
 
     event.target.reset();
     alert("Pet uploaded successfully!");
