@@ -2704,3 +2704,13 @@ body.admin-mode::before {
   margin: 0 !important;
   padding: 0 !important;
 }
+
+/* Fix category dropdown clipping */
+#filterCategory {
+  height: auto !important;
+  line-height: 1.4 !important;
+  padding: 0.5em 1.5em 0.5em 0.75em !important;
+  font-size: 1em !important;
+  background-position: right 0.75em center !important;
+  background-size: 1rem !important;
+}
