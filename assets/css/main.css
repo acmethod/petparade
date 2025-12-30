@@ -2667,3 +2667,40 @@ body.admin-mode::before {
   z-index: 99999;
   opacity: 0.9;
 }
+
+/* ===============================
+   REMOVE ALL GRID SPACING
+   =============================== */
+
+#main .thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Each tile touches the next one */
+#main .tile {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  width: 33.333%; /* 3 per row – adjust as needed */
+}
+
+/* Remove padding inside the link wrapper */
+#main .thumbnail {
+  display: block;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+}
+
+/* Make images flush with no gaps */
+#main .thumbnail img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 !important;
+  padding: 0 !important;
+}
