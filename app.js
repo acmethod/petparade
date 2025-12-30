@@ -1,4 +1,3 @@
-
 // ===============================
 //  Firebase initialization
 // ===============================
@@ -138,10 +137,13 @@ function watchGallery(filterCategory = "All") {
   if (!mainEl) return;
 
   db.collection("pets")
-    .where("approved", "==", true)
+     .where("approved", "==", true)
     .orderBy("createdAt", "desc")
     .onSnapshot((snapshot) => {
       mainEl.innerHTML = "";
+
+      const section = document.createElement("section");
+      section.className = "thumbnails";
 
       snapshot.forEach((doc) => {
         const pet = doc.data();
@@ -149,19 +151,37 @@ function watchGallery(filterCategory = "All") {
 
         if (filterCategory !== "All" && pet.category !== filterCategory) return;
 
-        // ===============================
-        //  Multiverse-compatible structure
-        // ===============================
-        const article = document.createElement("article");
-        article.className = "thumb";
+        const wrapper = document.createElement("div");
+        wrapper.className = "tile";
 
-        article.innerHTML = `
-          <a href="${pet.imageUrl}" class="image">
-            <img src="${pet.imageUrl}" alt="${pet.name}">
-          </a>
-          <h2>${pet.name}</h2>
-          <p>${pet.category}</p>
-        `;
+        const link = document.createElement("a");
+        link.href = pet.imageUrl;
+        link.className = "thumbnail";
+        link.setAttribute("data-position", "center center");
+
+        const img = document.createElement("img");
+        img.src = pet.imageUrl;
+        img.alt = pet.name;
+
+        const tag = document.createElement("span");
+        tag.className = "category-tag";
+        tag.textContent = pet.category;
+
+        const label = document.createElement("h3");
+        label.textContent = pet.name;
+
+        const likeBtn = document.createElement("button");
+        likeBtn.className = "like-tile-btn";
+        likeBtn.textContent = `❤️ ${pet.likes}`;
+        likeBtn.setAttribute("data-id", id);
+
+        likeBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          likeBtn.classList.add("pulse");
+          setTimeout(() => likeBtn.classList.remove("pulse"), 300);
+          likeButtonHandler(e);
+        });
 
         // ===============================
         //  ADMIN CONTROLS
@@ -182,15 +202,19 @@ function watchGallery(filterCategory = "All") {
 
           adminControls.appendChild(editBtn);
           adminControls.appendChild(deleteBtn);
-          article.appendChild(adminControls);
+          wrapper.appendChild(adminControls);
         }
 
-        mainEl.appendChild(article);
+        link.appendChild(img);
+        link.appendChild(tag);
+        link.appendChild(label);
+        link.appendChild(likeBtn);
+        wrapper.appendChild(link);
+        section.appendChild(wrapper);
       });
 
-      // ===============================
-      //  Reinitialize Poptrox Lightbox
-      // ===============================
+      mainEl.appendChild(section);
+
       $('#main').poptrox({
         usePopupCaption: true,
         usePopupNav: true,
